@@ -9,5 +9,5 @@ trap 'fail_fast' ERR
 
 sudo apt-get -y install zip
 
-python /vagrant//bootstrap/bootstrap_eldis.py
-python /vagrant/bootstrap/bootstrap_r4d.py
+python /home/crawler/bootstrap/bootstrap_eldis.py
+python /home/crawler/bootstrap/bootstrap_r4d.py
