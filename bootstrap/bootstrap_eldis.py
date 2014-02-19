@@ -54,7 +54,7 @@ def main():
     #add data to triple store
     os.system("/opt/tools/call_isql /opt/tools/eldis/eldis_load.isql")
     """
-    os.system('/usr/bin/python /opt/tools/eldis/eldis_update.py')
+    os.system('/usr/bin/python /vagrant/crawler/eldis_update.py')
     
     #so now look at add file to cron tab
     fh = open('/etc/cron.d/eldis', 'w')
