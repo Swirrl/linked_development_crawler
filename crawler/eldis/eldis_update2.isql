@@ -1,0 +1,4 @@
+ld_dir('/home/eldis/rdf/','*.rdf','http://linked-development.org/eldis/');
+SPARQL CLEAR GRAPH <http://linked-development.org/eldis/>;
+rdf_loader_run();
+exit;
