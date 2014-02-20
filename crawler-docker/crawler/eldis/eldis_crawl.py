@@ -109,10 +109,8 @@ class Eldis_Crawl(Eldis):
                     for region in document['category_region_array']['Region']:
                         regionuri = self.BASE['geography/' + region['object_id'] +'/']
                         self.graph.add((uri,self.DCTERMS['coverage'],regionuri))
-        
                 except:
                     pass
-    
     
                 try:
                     for country in document['country_focus_array']['Country']:
@@ -120,7 +118,6 @@ class Eldis_Crawl(Eldis):
                         self.graph.add((uri,self.DCTERMS['coverage'],countryuri))
                 except:
                     pass
-        
     
                 try:
                     for category in document['category_theme_array']['theme']:
@@ -134,7 +131,11 @@ class Eldis_Crawl(Eldis):
                         self.graph.add((uri,self.BIBO['uri'],fix_iri(document_url)))
                 except:
                     pass
-            rdf = open(self.out_dir + 'rdf/' + self.database + '-' + date + '-' + str(self.loop) + '.rdf','w')
+
+            filename = self.out_dir + 'rdf/' + self.database + '-' + date + '-' + str(self.loop) + '.rdf'
+            print "Writing to file: %s" % filename
+            
+            rdf = open(filename,'w')
             rdf.write(self.graph.serialize())
             rdf.close()
             #no longer needed
@@ -180,9 +181,9 @@ def main():
         out_dir = args[2]
     if not out_dir[-1:] == os.sep:
         out_dir = out_dir + os.sep
-    crawler = Eldis_Crawl(out_dir,
-                  data_url,
-                  loop)
+
+    crawler = Eldis_Crawl(out_dir, data_url, loop)
+
     crawler.build_graph()
 
 if __name__ == "__main__":

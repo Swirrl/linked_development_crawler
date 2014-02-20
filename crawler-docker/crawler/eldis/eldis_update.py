@@ -15,7 +15,7 @@ updates eldis data weekly
 
     You should have received a copy of the GNU Affero General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-    
+
 empties /home/eldis/rdf
 get new files
 makes new global.graph
@@ -32,10 +32,16 @@ delete graph
 import new graph.
 """
 import os
+import glob
 
 global out_dir, script_dir
-script_dir = "/opt/tools/eldis/" #Include trailing slash
+script_dir = "/home/crawler/crawler/eldis/" #Include trailing slash
 out_dir = "/home/eldis"
+
+api_key = "0ce032dc-c6dd-481b-9aae-d8897574bf9b"
+
+graph_uri = "http://linked-development.org/eldis/"
+update_endpoint = "http://192.168.0.190/junk/data?graph=" + graph_uri
 
 def loop(script,url):
     #start import of eldis data
@@ -56,19 +62,23 @@ def loop(script,url):
         if loop > 500:
             break
 
+def import_data():
+    rdf_files = glob.glob("/home/eldis/rdf/*.rdf")
+
+    # POST all rdf files in the directory to the triple store.
+    for rdf_file in rdf_files:
+        os.system("curl -X POST -H \"Content-Type: application/rdf+xml\" -d @" + rdf_file + " " + update_endpoint)
+
 def main():
     os.system('/bin/rm -rf '+out_dir+'/rdf/*')
-    os.system('/bin/echo http://linked-development.org/eldis/ > '+out_dir+'/rdf/global.graph')
-    
-    loop('eldis_crawl','http://api.ids.ac.uk/openapi/eldis/get_all/documents/full?num_results=1000')    
+    os.system('/bin/echo ' + graph_uri + ' > '+ out_dir + '/rdf/global.graph')
+
+    loop('eldis_crawl','http://api.ids.ac.uk/openapi/eldis/get_all/documents/full?num_results=1000')
     loop('eldis_crawl_countries','http://api.ids.ac.uk/openapi/eldis/get_all/countries/full?num_results=1000')
     loop('eldis_crawl_orgs','http://api.ids.ac.uk/openapi/eldis/get_all/organisations/full?num_results=1000')
     loop('eldis_crawl_subjects','http://api.ids.ac.uk/openapi/eldis/get_all/themes/full?num_results=1000')
-    
-    #open default conection to isql and run commands in a file
-    os.system("/opt/tools/call_isql "+script_dir+"eldis_update2.isql")
 
+    import_data()
 
 if __name__ == "__main__":
     main()
-

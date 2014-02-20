@@ -1,5 +1,5 @@
 """
-copyright 2013 neontribe ltd neil@neontribe.co.uk; 
+copyright 2013 neontribe ltd neil@neontribe.co.uk;
 & practical participation ltd tim@practicalparticipation.co.uk
 
     This program is free software: you can redistribute it and/or modify
@@ -36,7 +36,7 @@ class Eldis(object):
 
     database = 'eldis'
     token = 'c2ee7827-83de-4c99-b336-dbe73d340874'
-    
+
     RDF = Namespace("http://www.w3.org/1999/02/22-rdf-syntax-ns#")
     RDFS = Namespace("http://www.w3.org/2000/01/rdf-schema#")
     OWL = Namespace("http://www.w3.org/2002/07/owl#")
@@ -53,7 +53,7 @@ class Eldis(object):
     ORG = Namespace("http://www.w3.org/ns/org#")
     VCARD = Namespace("http://www.w3.org/2006/vcard/ns#")
     BASE = Namespace("http://linked-development.org/"+database +"/")
-    
+
     def __init__(self, out_dir='/home/eldis/', data_url=None, loop=1):
         self.graph = Graph()
         self.graph.namespace_manager.bind('owl', self.OWL, override=False)
@@ -80,24 +80,21 @@ class Eldis(object):
             data_url = contfile.readline()
             contfile.close()
         self.loop = loop
-        
+
     def dbpedia_url(self, string):
         string = string[0].upper() + string[1:].lower()
         string = string.replace(" ","_")
         return string
-    
+
     def fetch_data(self, data_url):
         req = urllib2.Request(data_url)
         req.add_header('Accept', 'application/json')
         req.add_header('Token-Guid', self.token)
-        try:
-            resp = urllib2.urlopen(req)
-            content = json.loads(resp.read())
-        except Exception as inst:
-            print inst
-            print "ERROR fetching" + data_url
+
+        resp = urllib2.urlopen(req)
+        content = json.loads(resp.read())
         return content
-    
+
     # Replace [ and ] if they occur in the path, query or fragment
     # Handle bad URLs (e.g. no domain component)
     def fix_iri(self, url):
