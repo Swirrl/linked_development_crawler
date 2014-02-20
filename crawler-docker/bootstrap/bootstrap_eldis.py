@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 """
 Copyright 2013 Neontribe ltd <neil@neontribe.co.uk>
 
@@ -27,13 +29,13 @@ def main():
     os.system('/bin/mkdir -p /home/eldis/rdf')
     os.system('/bin/echo http://linked-development.org/eldis/ > /home/eldis/rdf/global.graph')
     os.system('/usr/bin/touch /home/eldis/active')
-    
+
     """ #start import of eldis data
-    # UPDATE - 23rd May 2013 - @timdavies 
-    # Replaced so that we just call eldis_update.py. 
+    # UPDATE - 23rd May 2013 - @timdavies
+    # Replaced so that we just call eldis_update.py.
     # This script should work for first load as well as refreshes
     # As clearing an empty graph causes no errors
-    # 
+    #
     #
     loop = 1
     os.system('/usr/bin/python /opt/tools/eldis/eldis_crawl.py "http://api.ids.ac.uk/openapi/eldis/get_all/documents/full?num_results=1000" 1 /home/eldis/')
@@ -54,13 +56,14 @@ def main():
     #add data to triple store
     os.system("/opt/tools/call_isql /opt/tools/eldis/eldis_load.isql")
     """
-    os.system('/usr/bin/python /vagrant/crawler/eldis_update.py')
-    
-    #so now look at add file to cron tab
-    fh = open('/etc/cron.d/eldis', 'w')
-    fh.write('0 0 * * 0 root /bin/bash /root/.profile;/usr/bin/python /opt/tools/eldis/eldis_update.py\n')
-    fh.close()
 
+    os.system('/usr/bin/python /home/crawler/crawler/eldis/eldis_update.py')
+
+    #so now look at add file to cron tab
+
+    #fh = open('/etc/cron.d/eldis', 'w')
+    #fh.write('0 0 * * 0 root /bin/bash /root/.profile;/usr/bin/python /opt/tools/eldis/eldis_update.py\n')
+    #fh.close()
 
 if __name__ == "__main__":
     main()
