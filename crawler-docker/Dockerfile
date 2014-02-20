@@ -6,7 +6,7 @@ RUN sed -i 's/main$/main universe/' /etc/apt/sources.list && apt-get update
 
 RUN apt-get update && apt-get clean
 
-RUN apt-get install -y python-dev wget
+RUN apt-get install -y python-dev wget zip
 
 RUN cd /tmp; wget http://python-distribute.org/distribute_setup.py
 
