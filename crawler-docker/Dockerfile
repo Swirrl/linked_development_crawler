@@ -24,4 +24,4 @@ ADD bootstrap.sh /home/crawler/bootstrap.sh
 
 RUN /home/crawler/bootstrap.sh
 
-CMD /home/crawler/crawler/eldis/eldis_crawl.py
+CMD python /home/crawler/crawler/eldis/eldis_update.py
