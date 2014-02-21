@@ -5,9 +5,7 @@ function fail_fast {
     exit 1
 }
 
-trap 'fail_fast' ERR 
-
-sudo apt-get -y install zip
+trap 'fail_fast' ERR
 
 python /home/crawler/bootstrap/bootstrap_eldis.py
 python /home/crawler/bootstrap/bootstrap_r4d.py

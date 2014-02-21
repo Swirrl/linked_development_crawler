@@ -29,7 +29,7 @@ def main():
     os.system('/bin/mkdir -p /home/r4d/rdf')
     os.system('/bin/echo http://linked-development.org/r4d/ > /home/r4d/rdf/global.graph')
     os.system('/usr/bin/touch /home/r4d/active')
-    
+
     os.system('/usr/bin/wget  http://www.dfid.gov.uk/r4d/rdf/R4DOutputsData.zip')
     os.system('/bin/mv R4DOutputsData.zip /home/r4d/rdf/')
     #unpack r4d data
@@ -38,7 +38,7 @@ def main():
     #add data to triple store
 
     # os.system("/opt/tools/call_isql /opt/tools/r4d_load.isql")
-    
+
     #so now look at add file to cron tab
     # fh = open('/etc/cron.d/r4d', 'w')
     # fh.write('0 1 * * 0 root /bin/bash /root/.profile;/usr/bin/python /opt/tools/r4d_update.py\n')
