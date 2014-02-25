@@ -10,18 +10,33 @@ To use these scripts you will need the following pre-requisites:
 - pip install rdflib==3.1
 
 The first time you run the script for a given dataset you should set
-the initial_import flag.  e.g. for eldis data:
+the initial_import flag.  It takes as its second argument a URL for
+the end point.  This should not include the ?graph URI parameter as
+the script itself will append that depending on the dataset.
 
-    import-data.py eldis initial_import
+The initial_import flag need only be passed if the specified graph
+does not exist in your store.
+
+e.g. for eldis data:
+
+    $ ./import-data.py eldis http://localhost:3030/end-point/path/ initial_import
 
 Once the import has finished you should find triples in your database.
 
 Subsequent imports should use the following command:
 
-    import-data.py eldis
+    $ ./import-data.py eldis http://localhost:3030/end-point/path/
 
-This command imports triples to an existing dataset.
+This command imports triples to an existing dataset.  During the
+operation it also creates a temporary graph called
+http://linked-development.org/graphs/management which caontains the
+triples found in the 503.nt file.  This allows the front end to check
+whether an import is in progress, and return a graceful 503 error
+during the import.
 
+If the script fails during its execution it will leave the `tmp/`
+directory for inspection and debugging.  Ideally this should be
+removed before the script is run again.
 
 Docker
 ======
