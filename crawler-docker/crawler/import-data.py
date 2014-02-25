@@ -14,8 +14,9 @@ import copy
 import traceback
 
 retry_limit = 10
-
 retry_delays = [0,1,1,2,3,5,8,13,21,34]
+
+management_graph = "http://linked-development.org/graphs/management"
 
 class UploadFailure(StandardError):
     pass
@@ -23,7 +24,6 @@ class UploadFailure(StandardError):
 def execute(command):
     print command
     return os.system(command)
-
 
 def post_data(update_endpoint, rdf_file, delays):
     delays = copy.copy(delays)
@@ -56,10 +56,12 @@ def restore_snapshot(graph_endpoint, snapshot_name):
         print "This is the initial run so there is nothing to restore."
 
 def start_transaction(end_point):
-    print "TODO: implement start transaction... add a triple into a metadata graph that we check"
+    graph = end_point + "?graph=" + management_graph
+    execute("curl -f -X POST -H \"Content-Type: application/n-triples\" -d @503.nt " + graph)
 
 def end_transaction(end_point):
-    print "TODO: implement end transaction... delete the metadata graph that we check"
+    graph = end_point + "?graph=" + management_graph
+    delete_graph(graph)
 
 def delete_graph(graph_endpoint):
     if not is_initial_import():
