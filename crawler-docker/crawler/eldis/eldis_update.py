@@ -52,6 +52,7 @@ def loop(script,url):
     next_url = next_url_fh.read()
     next_url_fh.close()
     #loop while there are new urls to go to. see Eldis documentation as to why
+
     while next_url != "No more pages":
         loop  += 1
         os.system('/usr/bin/python ' + script_dir + script + '.py "'  + next_url + '" ' + str(loop) + ' "' + out_dir + '"')
@@ -60,7 +61,7 @@ def loop(script,url):
         next_url_fh.close()
         #safety
         #if loop > 500:
-        if loop > 1:
+        if loop > 1: # TODO comment out and comment the above back in
             break
 
 def main():

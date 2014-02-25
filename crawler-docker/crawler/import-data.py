@@ -122,7 +122,7 @@ if __name__ == "__main__":
     # relative paths from now on.
     os.chdir(os.path.dirname(os.path.realpath(__file__)))
 
-    if len(sys.argv) < 4:
+    if not (len(sys.argv) == 3 or len(sys.argv) == 4):
         print "Usage: import-data.py eldis|r4d end-point [initial_import]"
         exit(1)
 
