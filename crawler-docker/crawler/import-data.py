@@ -13,7 +13,6 @@ import time
 import copy
 import traceback
 
-retry_limit = 10
 retry_delays = [0,1,1,2,3,5,8,13,21,34]
 
 management_graph = "http://linked-development.org/graphs/management"
@@ -123,13 +122,13 @@ if __name__ == "__main__":
     # relative paths from now on.
     os.chdir(os.path.dirname(os.path.realpath(__file__)))
 
-    if len(sys.argv) < 2:
-        print "Usage: import-data.py eldis|r4d [initial_import]"
+    if len(sys.argv) < 4:
+        print "Usage: import-data.py eldis|r4d end-point [initial_import]"
         exit(1)
 
     dataset = sys.argv[1]
 
-    end_point = "http://192.168.0.190:3030/junk/data"
+    end_point = sys.argv[2] # "http://192.168.0.190:3030/junk/data"
 
     initialise()
 
