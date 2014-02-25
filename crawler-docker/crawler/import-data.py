@@ -20,15 +20,19 @@ management_graph = "http://linked-development.org/graphs/management"
 class UploadFailure(StandardError):
     pass
 
-def execute(command):
+def execute(command, raise_on_error=True):
     print command
-    return os.system(command)
+    ret = os.system(command)
+    if raise_on_error and (not ret == 0):
+        raise StandardError, "Aborting command failed ("+ str(ret) + "): " + command
+
+    return ret
 
 def post_data(update_endpoint, rdf_file, delays):
     delays = copy.copy(delays)
     time.sleep(delays.pop(0))
     command = "curl -f -X POST -H \"Content-Type: application/rdf+xml\" -d @" + rdf_file + " " + update_endpoint
-    posted = execute(command)
+    posted = execute(command, raise_on_error=False)
 
     while posted != 0:
         if not delays:
@@ -38,19 +42,21 @@ def post_data(update_endpoint, rdf_file, delays):
         ret = os.system(command)
 
 def is_initial_import():
-    return len(sys.argv) >= 3 and sys.argv[2] == "initial_import"
+    return len(sys.argv) == 4 and sys.argv[3] == "initial_import"
 
 def fetch_snapshot(update_endpoint, snapshot_name):
     if not is_initial_import():
-        snapshot_file = "./tmp/" + snapshot_name + ".ttl"
+        snapshot_file = "./tmp/cabi-crawl-data/" + snapshot_name + "-snapshot.ttl"
         execute("curl -f -X GET -H \"Accept: application/turtle\" " + update_endpoint + " > " + snapshot_file)
     else:
         print "Initial import, not creating a snapshot"
 
 def restore_snapshot(graph_endpoint, snapshot_name):
     if not is_initial_import():
-        snapshot_file = "./tmp/" + snapshot_name + ".ttl"
-        execute("curl -f -X POST -H \"Content-Type: application/turtle\" -d @" + snapshot_file + " " + graph_endpoint)
+        snapshot_file = "./tmp/cabi-crawl-data/" + snapshot_name + "-snapshot.ttl"
+        ret = execute("curl -f -X POST -H \"Content-Type: application/turtle\" -d @" + snapshot_file + " " + graph_endpoint)
+        if ret == 0:
+            execute("rm " + snapshot_file)
     else:
         print "This is the initial run so there is nothing to restore."
 
@@ -83,7 +89,7 @@ def get_remote_data(dataset_name):
         command = "./r4d/r4d_update.py"
 
     print "Fetching remote " + dataset_name + " data: " + command
-    os.system(command)
+    os.system(command) # delegate to update script
 
 def import_data(dataset_name, endpoint):
     graph_uri = "http://linked-development.org/" + dataset_name + "/"
@@ -108,13 +114,13 @@ def import_data(dataset_name, endpoint):
 
 def initialise():
     if not os.path.exists("./tmp"):
-        os.system('/bin/mkdir -p ./tmp/cabi-crawl-data/eldis/rdf')
-        os.system('/bin/echo http://linked-development.org/eldis/ > ./tmp/cabi-crawl-data/eldis/rdf/global.graph')
-        os.system('/usr/bin/touch ./tmp/cabi-crawl-data/eldis/active')
+        execute('/bin/mkdir -p ./tmp/cabi-crawl-data/eldis/rdf')
+        execute('/bin/echo http://linked-development.org/eldis/ > ./tmp/cabi-crawl-data/eldis/rdf/global.graph')
+        execute('/usr/bin/touch ./tmp/cabi-crawl-data/eldis/active')
 
-        os.system('/bin/mkdir -p ./tmp/cabi-crawl-data/r4d/rdf')
-        os.system('/bin/echo http://linked-development.org/r4d/ > ./tmp/cabi-crawl-data/r4d/rdf/global.graph')
-        os.system('/usr/bin/touch ./tmp/cabi-crawl-data/r4d/active')
+        execute('/bin/mkdir -p ./tmp/cabi-crawl-data/r4d/rdf')
+        execute('/bin/echo http://linked-development.org/r4d/ > ./tmp/cabi-crawl-data/r4d/rdf/global.graph')
+        execute('/usr/bin/touch ./tmp/cabi-crawl-data/r4d/active')
 
 if __name__ == "__main__":
 
@@ -133,3 +139,4 @@ if __name__ == "__main__":
     initialise()
 
     import_data(dataset, end_point)
+    execute("rm -rf ./tmp") # After a successful import remove all the data
