@@ -1,2 +1,4 @@
 .vagrant
 *.pyc
+crawler-docker/crawler/tmp
+crawler-docker/crawler/build

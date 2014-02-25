@@ -16,7 +16,7 @@ based on a script provided by Tim Davies
     You should have received a copy of the GNU Affero General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-takes three arguments, the first the data_url to query (quoted) 
+takes three arguments, the first the data_url to query (quoted)
 the second is a loop number
 the third is an output directory
 
@@ -42,7 +42,7 @@ from urlparse import urlparse, urlunparse
 
 
 class Eldis_Crawl(Eldis):
-    
+
     def build_graph(self):
         """
         ok this is fun.
@@ -51,22 +51,22 @@ class Eldis_Crawl(Eldis):
         self.grpah.close()
         self.graph = None
         self.graph = Graph()
-        
+
         free the ram used, they all make empty graphs, so if we iterate
-        over reading in files to graphs our memory usage spirals. on 2013/04/12 
+        over reading in files to graphs our memory usage spirals. on 2013/04/12
         the memory usage for  http://api.ids.ac.uk/openapi/"+eldis.database+"/get_all/documents/full
         in 1000 record chunks was 1.5G, if that memory is not available then the process is KILLED
-        
+
         I cannot find a way to free this from inside python have looked at gc module, I suspect this
         may lie in some underlieing code.
-        
-        the current fix will to to write out to a file either a follow up url or 'No more pages', 
+
+        the current fix will to to write out to a file either a follow up url or 'No more pages',
         and take this as the input, and run a loop from outside this code to spawn a series
         of python processes so the memory is always freed when the process ends.
-        
+
         file names have a datestamp in them because virtuoso by default does not import the same
         file twice. So without this updates will not be read.
-        
+
         """
         date = datetime.date.today().isoformat()
         print "Reading "+self.data_url
@@ -85,10 +85,10 @@ class Eldis_Crawl(Eldis):
                 self.graph.add((uri,self.DCTERMS['date'],Literal(document['publication_date'].replace(' ','T'))))
                 self.graph.add((uri,self.DCTERMS['language'],Literal(document['language_name'])))
                 self.graph.add((uri,self.RDFS['seeAlso'],URIRef(document['website_url'].replace('display&','display?'))))
-        
+
                 for author in document['author']:
                     self.graph.add((uri,self.DCTERMS['creator'],Literal(author)))
-    
+
                 try:
                     for publisher in document['publisher_array']['Publisher']:
                         puburi = self.BASE['organisation/' + publisher['object_id'] +'/']
@@ -99,11 +99,11 @@ class Eldis_Crawl(Eldis):
                         self.graph.add((puburi,self.RDF['type'],self.FAO['organization']))
                         self.graph.add((puburi,self.RDF['type'],self.FOAF['organization']))
                         # We could follow this URL to get more information on the organisation...
-                        self.graph.add((puburi,self.RDFS['seeAlso'],publisher['metadata_url']))         
+                        self.graph.add((puburi,self.RDFS['seeAlso'],publisher['metadata_url']))
                 except:
                     #This could be improved. Bridge and Eldis appear to differ on publisher values
-                    self.graph.add((uri,self.DCTERMS['publisher'],Literal(document['publisher']))) 
-    
+                    self.graph.add((uri,self.DCTERMS['publisher'],Literal(document['publisher'])))
+
                 #ELDIS / BRIDGE Regions do not map onto FAO regions effectively. We could model containments in future...
                 try:
                     for region in document['category_region_array']['Region']:
@@ -111,21 +111,21 @@ class Eldis_Crawl(Eldis):
                         self.graph.add((uri,self.DCTERMS['coverage'],regionuri))
                 except:
                     pass
-    
+
                 try:
                     for country in document['country_focus_array']['Country']:
                         countryuri = self.BASE['geography/' + country['object_id'] +'/']
                         self.graph.add((uri,self.DCTERMS['coverage'],countryuri))
                 except:
                     pass
-    
+
                 try:
                     for category in document['category_theme_array']['theme']:
                         themeuri = self.BASE['themes/' + category['object_id'] +'/']
                         self.graph.add((uri,self.DCTERMS['subject'],themeuri))
                 except:
                     pass
-    
+
                 try:
                     for document_url in document['urls']:
                         self.graph.add((uri,self.BIBO['uri'],fix_iri(document_url)))
@@ -134,13 +134,13 @@ class Eldis_Crawl(Eldis):
 
             filename = self.out_dir + 'rdf/' + self.database + '-' + date + '-' + str(self.loop) + '.rdf'
             print "Writing to file: %s" % filename
-            
+
             rdf = open(filename,'w')
             rdf.write(self.graph.serialize())
             rdf.close()
             #no longer needed
             #self.graph.remove((None,None,None))
-            
+
             contfile = open(self.out_dir + 'nexturl', 'w')
             try:
                 if(content['metadata']['next_page']):
@@ -171,8 +171,8 @@ def main():
         usage(e)
     data_url = "http://api.ids.ac.uk/openapi/"+'eldis'+"/get_all/documents/full?num_results=1000"
     loop = 0
-    out_dir='/home/eldis/'
-        
+    out_dir='/tmp/cabi-crawl-data/eldis/'
+
     if len(args) > 0:
         data_url = args[0]
     if len(args) > 1:

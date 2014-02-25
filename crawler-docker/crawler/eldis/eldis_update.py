@@ -37,8 +37,8 @@ import os
 import glob
 
 global out_dir, script_dir
-script_dir = "/home/crawler/crawler/eldis/" #Include trailing slash
-out_dir = "/tmp/cabi-crawl-data/eldis"
+script_dir = "./eldis/" #Include trailing slash
+out_dir = "./tmp/cabi-crawl-data/eldis"
 
 graph_uri = "http://linked-development.org/eldis/"
 update_endpoint = "http://192.168.0.190/junk/data?graph=" + graph_uri
@@ -74,8 +74,6 @@ def main():
     #loop('eldis_crawl_countries','http://api.ids.ac.uk/openapi/eldis/get_all/countries/full?num_results=1000')
     #loop('eldis_crawl_orgs','http://api.ids.ac.uk/openapi/eldis/get_all/organisations/full?num_results=1000')
     #loop('eldis_crawl_subjects','http://api.ids.ac.uk/openapi/eldis/get_all/themes/full?num_results=1000')
-
-    #import_data()
 
 if __name__ == "__main__":
     main()

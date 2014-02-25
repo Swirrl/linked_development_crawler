@@ -43,14 +43,14 @@ def is_initial_import():
 
 def fetch_snapshot(update_endpoint, snapshot_name):
     if not is_initial_import():
-        snapshot_file = "/tmp/" + snapshot_name + ".ttl"
+        snapshot_file = "./tmp/" + snapshot_name + ".ttl"
         execute("curl -f -X GET -H \"Accept: application/turtle\" " + update_endpoint + " > " + snapshot_file)
     else:
         print "Initial import, not creating a snapshot"
 
 def restore_snapshot(graph_endpoint, snapshot_name):
     if not is_initial_import():
-        snapshot_file = "/tmp/" + snapshot_name + ".ttl"
+        snapshot_file = "./tmp/" + snapshot_name + ".ttl"
         execute("curl -f -X POST -H \"Content-Type: application/turtle\" -d @" + snapshot_file + " " + graph_endpoint)
     else:
         print "This is the initial run so there is nothing to restore."
@@ -77,18 +77,17 @@ def import_rdf_files(base_path, graph_endpoint):
 def get_remote_data(dataset_name):
     command = None
     if dataset_name == "eldis":
-        command = "/home/crawler/crawler/eldis/eldis_update.py"
+        command = "./eldis/eldis_update.py"
     else:
-        command = "/home/crawler/crawler/r4d/r4d_update.py"
+        command = "./r4d/r4d_update.py"
 
     print "Fetching remote " + dataset_name + " data: " + command
     os.system(command)
 
-
 def import_data(dataset_name, endpoint):
     graph_uri = "http://linked-development.org/" + dataset_name + "/"
     graph_endpoint = endpoint + "?graph=" + graph_uri
-    base_path = "/tmp/cabi-crawl-data/" + dataset_name + "/rdf/"
+    base_path = "./tmp/cabi-crawl-data/" + dataset_name + "/rdf/"
 
     get_remote_data(dataset_name)
 
@@ -106,7 +105,21 @@ def import_data(dataset_name, endpoint):
 
     end_transaction(end_point)
 
+def initialise():
+    if not os.path.exists("./tmp"):
+        os.system('/bin/mkdir -p ./tmp/cabi-crawl-data/eldis/rdf')
+        os.system('/bin/echo http://linked-development.org/eldis/ > ./tmp/cabi-crawl-data/eldis/rdf/global.graph')
+        os.system('/usr/bin/touch ./tmp/cabi-crawl-data/eldis/active')
+
+        os.system('/bin/mkdir -p ./tmp/cabi-crawl-data/r4d/rdf')
+        os.system('/bin/echo http://linked-development.org/r4d/ > ./tmp/cabi-crawl-data/r4d/rdf/global.graph')
+        os.system('/usr/bin/touch ./tmp/cabi-crawl-data/r4d/active')
+
 if __name__ == "__main__":
+
+    # Change working directory to that of this script so we can use
+    # relative paths from now on.
+    os.chdir(os.path.dirname(os.path.realpath(__file__)))
 
     if len(sys.argv) < 2:
         print "Usage: import-data.py eldis|r4d [initial_import]"
@@ -115,5 +128,7 @@ if __name__ == "__main__":
     dataset = sys.argv[1]
 
     end_point = "http://192.168.0.190:3030/junk/data"
+
+    initialise()
 
     import_data(dataset, end_point)

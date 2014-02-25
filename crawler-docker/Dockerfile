@@ -19,13 +19,13 @@ RUN useradd -m crawler
 
 ADD crawler /home/crawler/crawler
 
-ADD bootstrap /home/crawler/bootstrap
-ADD bootstrap.sh /home/crawler/bootstrap.sh
+#ADD bootstrap /home/crawler/bootstrap
+#ADD bootstrap.sh /home/crawler/bootstrap.sh
 
-RUN /home/crawler/bootstrap.sh
+#RUN /home/crawler/bootstrap.sh
 
 #ADD sample-rdf /home/eldis/rdf
 
-CMD python /home/crawler/crawler/eldis/eldis_update.py
+#CMD python /home/crawler/crawler/eldis/eldis_update.py
 
-CMD python /home/crawler/crawler/import-data.py eldis
+#CMD python /home/crawler/crawler/import-data.py eldis
