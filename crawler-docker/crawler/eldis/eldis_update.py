@@ -38,7 +38,7 @@ import glob
 
 global out_dir, script_dir
 script_dir = "/home/crawler/crawler/eldis/" #Include trailing slash
-out_dir = "/home/eldis"
+out_dir = "/tmp/cabi-crawl-data/eldis"
 
 graph_uri = "http://linked-development.org/eldis/"
 update_endpoint = "http://192.168.0.190/junk/data?graph=" + graph_uri

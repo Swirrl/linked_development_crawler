@@ -26,15 +26,15 @@ put in place auto updates for it
 import os
 
 def main():
-    os.system('/bin/mkdir -p /home/r4d/rdf')
-    os.system('/bin/echo http://linked-development.org/r4d/ > /home/r4d/rdf/global.graph')
-    os.system('/usr/bin/touch /home/r4d/active')
+    os.system('/bin/mkdir -p /tmp/cabi-crawl-data/r4d/rdf')
+    os.system('/bin/echo http://linked-development.org/r4d/ > /tmp/cabi-crawl-data/r4d/rdf/global.graph')
+    os.system('/usr/bin/touch /tmp/cabi-crawl-data/r4d/active')
 
     os.system('/usr/bin/wget  http://www.dfid.gov.uk/r4d/rdf/R4DOutputsData.zip')
-    os.system('/bin/mv R4DOutputsData.zip /home/r4d/rdf/')
+    os.system('/bin/mv R4DOutputsData.zip /tmp/cabi-crawl-data/r4d/rdf/')
     #unpack r4d data
-    os.system('/usr/bin/unzip /home/r4d/rdf/R4DOutputsData.zip -d /home/r4d/rdf/')
-    os.system('/bin/rm -f /home/r4d/rdf/R4DOutputsData.zip')
+    os.system('/usr/bin/unzip /tmp/cabi-crawl-data/r4d/rdf/R4DOutputsData.zip -d /tmp/cabi-crawl-data/r4d/rdf/')
+    os.system('/bin/rm -f /tmp/cabi-crawl-data/r4d/rdf/R4DOutputsData.zip')
     #add data to triple store
 
     # os.system("/opt/tools/call_isql /opt/tools/r4d_load.isql")

@@ -20,7 +20,7 @@ based on a script provided by Tim Davies
     You should have received a copy of the GNU Affero General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-takes three arguments, the first the data_url to query (quoted) 
+takes three arguments, the first the data_url to query (quoted)
 the second is a loop number
 the third is an output directory
 
@@ -54,22 +54,22 @@ class Eldis_Orgs(Eldis):
         self.grpah.close()
         self.graph = None
         self.graph = Graph()
-        
+
         free the ram used, they all make empty graphs, so if we iterate
-        over reading in files to graphs our memory usage spirals. on 2013/04/12 
+        over reading in files to graphs our memory usage spirals. on 2013/04/12
         the memory usage for  http://api.ids.ac.uk/openapi/"+eldis.database+"/get_all/documents/full
         in 1000 record chunks was 1.5G, if that memory is not available then the process is KILLED
-        
+
         I cannot find a way to free this from inside python have looked at gc module, I suspect this
         may lie in some underlieing code.
-        
-        the current fix will to to write out to a file either a follow up url or 'No more pages', 
+
+        the current fix will to to write out to a file either a follow up url or 'No more pages',
         and take this as the input, and run a loop from outside this code to spawn a series
         of python processes so the memory is always freed when the process ends.
-        
+
         file names have a datestamp in them because virtuoso by default does not import the same
         file twice. So without this updates will not be read.
-        
+
         """
         date = datetime.date.today().isoformat()
         print "Reading "+self.data_url
@@ -77,7 +77,7 @@ class Eldis_Orgs(Eldis):
         try:
             org_types_uri = self.BASE['themes/organisation_types']
             self.graph.add((org_types_uri,self.RDF['type'],self.SKOS['ConceptScheme']))
-            
+
             for org in content['results']:
                 org_uri = self.BASE['organisation/' + org['object_id'] +'/']
 
@@ -85,14 +85,14 @@ class Eldis_Orgs(Eldis):
                 self.graph.add((org_uri,self.RDF['type'],self.FOAF['Organization']))
                 self.graph.add((org_uri,self.RDF['type'],self.DBPEDIA['Organisation']))
                 self.graph.add((org_uri,self.RDF['type'],self.ORG['Organization']))
-                                
+
                 self.graph.add((org_uri,self.DCTERMS['identifier'],Literal(org['object_id'])))
                 self.graph.add((org_uri,self.DCTERMS['title'],Literal(org['name'])))
                 self.graph.add((org_uri,self.FOAF['name'],Literal(org['name'])))
                 self.graph.add((org_uri,self.RDFS['label'],Literal(org['name'])))
-                
+
                 self.graph.add((org_uri,self.DCTERMS['created'],Literal(org['date_created'].replace(' ','T'))))
-                
+
                 try:
                     self.graph.add((org_uri,self.FOAF['nick'],Literal(org['acronym'])))
                 except:
@@ -102,7 +102,7 @@ class Eldis_Orgs(Eldis):
                     self.graph.add((org_uri,self.DCTERMS['description'],Literal(org['description'])))
                 except:
                     pass
-                
+
                 try:
                     address_uri = self.BASE['organisation/' + org['object_id'] +'/address']
                     self.graph.add((org_uri,self.VCARD['hasAddress'],address_uri))
@@ -111,22 +111,22 @@ class Eldis_Orgs(Eldis):
                     self.graph.add((address_uri,self.VCARD['streetAddress'],Literal(org['address1'] + ", " + org['address2'])))
                     self.graph.add((address_uri,self.VCARD['locality'],Literal(org['address3'])))
                     self.graph.add((address_uri,self.VCARD['postalCode'],Literal(org['postcode'])))
-                    
+
                 except Exception as e:
                     pass
-                
+
                 try:
                     for category in org['category_theme_array']['theme']:
                          self.graph.add((org_uri,self.FOAF['topic_interest'],self.BASE['themes/' + category['object_id']]))
                 except:
                     pass
-                
+
                 try:
                     for category in org['country_focus_array']['Country']:
                          self.graph.add((org_uri,self.FOAF['topic_interest'],self.BASE['geography/' + category['object_id']]))
                 except:
                     pass
-                
+
                 #This section could be extended to use propper concept lists etc.
                 try:
                     type_uri = self.BASE['themes/organisation_types/' + org['organisation_type_id']]
@@ -140,10 +140,10 @@ class Eldis_Orgs(Eldis):
                     self.graph.add((org_types_uri,self.SKOS['hasTopConcept'],type_uri))
                 except:
                     pass
-                
+
                 try:
                     self.graph.add((org_uri,self.FOAF['homepage'],URIRef(self.fix_iri(org['organisation_url']))))
-                except Exception as e: 
+                except Exception as e:
                     pass
 
 
@@ -156,7 +156,7 @@ class Eldis_Orgs(Eldis):
             rdf.close()
             #no longer needed
             #self.graph.remove((None,None,None))
-            
+
             contfile = open(self.out_dir + 'nexturl', 'w')
             try:
                 if(content['metadata']['next_page']):
@@ -188,7 +188,7 @@ def main():
         usage(e)
     data_url = "http://api.ids.ac.uk/openapi/eldis/get_all/organisations/full?num_results=1000"
     loop = 0
-    out_dir='/home/eldis/'
+    out_dir='/tmp/cabi-crawl-data/eldis/'
 
     if len(args) > 0:
         data_url = args[0]
@@ -202,11 +202,11 @@ def main():
         opts, args = getopt.gnu_getopt(sys.argv[1:], "", [])
     except getopt.GetoptError, e:
         usage(e)
-    
+
     crawler = Eldis_Orgs(out_dir,
                   data_url,
                   loop)
     crawler.build_graph()
-    
+
 if __name__ == "__main__":
     main()

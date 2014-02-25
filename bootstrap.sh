@@ -5,7 +5,7 @@ function fail_fast {
     exit 1
 }
 
-trap 'fail_fast' ERR 
+trap 'fail_fast' ERR
 
-python /vagrant//bootstrap/bootstrap_eldis.py
-python /vagrant/bootstrap/bootstrap_r4d.py
+python /home/crawler/bootstrap/bootstrap_eldis.py
+python /home/crawler/bootstrap/bootstrap_r4d.py

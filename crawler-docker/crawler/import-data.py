@@ -88,7 +88,7 @@ def get_remote_data(dataset_name):
 def import_data(dataset_name, endpoint):
     graph_uri = "http://linked-development.org/" + dataset_name + "/"
     graph_endpoint = endpoint + "?graph=" + graph_uri
-    base_path = "/home/" + dataset_name + "/rdf/"
+    base_path = "/tmp/cabi-crawl-data/" + dataset_name + "/rdf/"
 
     get_remote_data(dataset_name)
 

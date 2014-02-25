@@ -26,6 +26,6 @@ RUN /home/crawler/bootstrap.sh
 
 #ADD sample-rdf /home/eldis/rdf
 
-#CMD python /home/crawler/crawler/eldis/eldis_update.py
+CMD python /home/crawler/crawler/eldis/eldis_update.py
 
 CMD python /home/crawler/crawler/import-data.py eldis

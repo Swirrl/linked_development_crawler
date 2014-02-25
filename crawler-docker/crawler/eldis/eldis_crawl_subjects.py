@@ -16,7 +16,7 @@ based on a script provided by Tim Davies
     You should have received a copy of the GNU Affero General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-takes three arguments, the first the data_url to query (quoted) 
+takes three arguments, the first the data_url to query (quoted)
 the second is a loop number
 the third is an output directory
 
@@ -49,74 +49,74 @@ class Eldis_Subjects(Eldis):
         self.grpah.close()
         self.graph = None
         self.graph = Graph()
-        
+
         free the ram used, they all make empty graphs, so if we iterate
-        over reading in files to graphs our memory usage spirals. on 2013/04/12 
+        over reading in files to graphs our memory usage spirals. on 2013/04/12
         the memory usage for  http://api.ids.ac.uk/openapi/"+eldis.database+"/get_all/documents/full
         in 1000 record chunks was 1.5G, if that memory is not available then the process is KILLED
-        
+
         I cannot find a way to free this from inside python have looked at gc module, I suspect this
         may lie in some underlieing code.
-        
-        the current fix will to to write out to a file either a follow up url or 'No more pages', 
+
+        the current fix will to to write out to a file either a follow up url or 'No more pages',
         and take this as the input, and run a loop from outside this code to spawn a series
         of python processes so the memory is always freed when the process ends.
-        
+
         file names have a datestamp in them because virtuoso by default does not import the same
         file twice. So without this updates will not be read.
-        
+
         """
         date = datetime.date.today().isoformat()
         print "Reading "+self.data_url
         content = self.fetch_data(self.data_url)
-        try:            
+        try:
             for theme in content['results']:
                 scheme_uri = self.BASE['themes/' + theme['superparent_object_id'] + '/']
                 self.graph.add((scheme_uri,self.RDF['type'],self.SKOS['ConceptScheme']))
                 self.graph.add((scheme_uri,self.RDFS['label'],Literal('IDS Taxonomy')))
-                
+
                 uri = self.BASE['themes/' + theme['object_id'] +'/']
                 self.graph.add((uri,self.RDF['type'],self.SKOS['Concept']))
                 self.graph.add((uri,self.SKOS['inScheme'],scheme_uri))
 
-                if theme['cat_level'] == '1': 
+                if theme['cat_level'] == '1':
                     self.graph.add((uri,self.SKOS['topConceptOf'],scheme_uri))
                     self.graph.add((scheme_uri,self.SKOS['hasTopConcept'],uri))
 
                 self.graph.add((uri,self.RDFS['label'],Literal(theme['title'],lang="en")))
                 self.graph.add((uri,self.SKOS['prefLabel'],Literal(theme['title'],lang="en")))
                 self.graph.add((uri,self.SKOS['notation'],Literal(theme['object_id'])))
-                
-                
+
+
                 self.graph.add((uri,self.DCTERMS['identifier'],Literal(theme['object_id'])))
                 #Link back to the original meta-data
                 self.graph.add((uri,self.RDFS['seeAlso'],URIRef(theme['metadata_url'])))
-                
+
                 try:
                     for child in theme['children_object_array']['child']:
                         child_uri = self.BASE['themes/' + child['object_id'] +'/']
                         self.graph.add((child_uri,self.RDF['type'],self.SKOS['Concept']))
                         self.graph.add((child_uri,self.SKOS['inScheme'],scheme_uri))
-                        
+
                         self.graph.add((child_uri,self.RDFS['label'],Literal(child['object_name'],lang="en")))
                         self.graph.add((child_uri,self.SKOS['prefLabel'],Literal(child['object_name'],lang="en")))
                         self.graph.add((child_uri,self.SKOS['notation'],Literal(child['object_id'])))
-                        
+
                         self.graph.add((child_uri,self.DCTERMS['identifier'],Literal(child['object_id'])))
                         self.graph.add((child_uri,self.RDFS['seeAlso'],URIRef(child['metadata_url'])))
-                        
+
                         self.graph.add((child_uri,self.SKOS['broader'],uri))
                         self.graph.add((uri,self.SKOS['narrower'],child_uri))
-                        
+
                 except Exception as e:
-                    pass 
+                    pass
 
 
             rdf = open(self.out_dir + 'rdf/' + self.database + '-themes-' + date + '-' + str(self.loop) + '.rdf','w')
             rdf.write(self.graph.serialize())
             rdf.close()
 
-            
+
             contfile = open(self.out_dir + 'nexturl', 'w')
             try:
                 if(content['metadata']['next_page']):
@@ -147,8 +147,8 @@ def main():
         usage(e)
     data_url = "http://api.ids.ac.uk/openapi/"+'eldis'+"/get_all/themes/full?num_results=2000"
     loop = 0
-    out_dir='/home/eldis/'
-        
+    out_dir='/tmp/cabi-crawl-data/eldis/'
+
     if len(args) > 0:
         data_url = args[0]
     if len(args) > 1:

@@ -26,11 +26,11 @@ import os
 
 
 def main():
-    os.system('/bin/mkdir -p /home/eldis/rdf')
-    os.system('/bin/echo http://linked-development.org/eldis/ > /home/eldis/rdf/global.graph')
-    os.system('/usr/bin/touch /home/eldis/active')
+    os.system('/bin/mkdir -p /tmp/cabi-crawl-data/eldis/rdf')
+    os.system('/bin/echo http://linked-development.org/eldis/ > /tmp/cabi-crawl-data/eldis/rdf/global.graph')
+    os.system('/usr/bin/touch /tmp/cabi-crawl-data/eldis/active')
 
-    #os.system('/usr/bin/python /home/crawler/crawler/eldis/eldis_update.py')
+    #os.system('/usr/bin/python /tmp/cabi-crawl-data/crawler/crawler/eldis/eldis_update.py')
     #so now look at add file to cron tab
 
     #fh = open('/etc/cron.d/eldis', 'w')
