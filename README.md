@@ -3,10 +3,37 @@ linked-development-crawler
 
 CABI - Linked Development API Crawler
 
-To use this, you will need to run it in a Docker.
+To use these scripts you will need the following pre-requisites:
 
-1. Initial Import
-=================
+- Python 2.7
+- pip (The python package manager)
+- pip install rdflib==3.1
+
+The first time you run the script for a given dataset you should set
+the initial_import flag.  e.g. for eldis data:
+
+    import-data.py eldis initial_import
+
+Once the import has finished you should find triples in your database.
+
+Subsequent imports should use the following command:
+
+    import-data.py eldis
+
+This command imports triples to an existing dataset.
+
+
+Docker
+======
+
+There is a docker setup included, however due to a
+[suspected bug in docker](https://github.com/dotcloud/docker/issues/4329)
+it is not currently fully working.
+
+Instructions on running this with docker can be found below:
+
+Docker Initial Import
+---------------------
 
 You must create an initial import of the data into your fuseki
 instance to do this run the following commands:
@@ -17,8 +44,8 @@ instance to do this run the following commands:
 
     $ docker run -t -i crawler /home/crawler/crawler/import-data.py r4d initial_import
 
-2. Recurring Imports
-====================
+Docker Recurring Imports
+------------------------
 
 Subsequent data imports (for example on a crontab) can be run like
 this:
@@ -29,15 +56,6 @@ this:
 
 
 Development
-===========
-
-These scripts were provided by CABI and mofified to work with PMD.
-They still contain a number of hard coded assumptions on their
-environment (e.g. global system paths), which mean that they're best
-always run in a contained docker environment.
-
-If you're wanting to hack on this inside the docker environment use
-the following command to (re)build, tag and execute the environment
-with your changes:
+-----------
 
     $ docker build -t crawler . && docker run -t -i crawler /home/crawler/crawler/import-data.py eldis
