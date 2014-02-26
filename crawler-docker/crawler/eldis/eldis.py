@@ -54,7 +54,7 @@ class Eldis(object):
     VCARD = Namespace("http://www.w3.org/2006/vcard/ns#")
     BASE = Namespace("http://linked-development.org/"+database +"/")
 
-    def __init__(self, out_dir='/tmp/cabi-crawl-data/eldis/', data_url=None, loop=1):
+    def __init__(self, out_dir='./tmp/cabi-crawl-data/eldis/', data_url=None, loop=1):
         self.graph = Graph()
         self.graph.namespace_manager.bind('owl', self.OWL, override=False)
         self.graph.namespace_manager.bind('dc', self.DC, override=False)

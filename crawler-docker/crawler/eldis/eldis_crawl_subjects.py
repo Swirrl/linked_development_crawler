@@ -147,7 +147,7 @@ def main():
         usage(e)
     data_url = "http://api.ids.ac.uk/openapi/"+'eldis'+"/get_all/themes/full?num_results=2000"
     loop = 0
-    out_dir='/tmp/cabi-crawl-data/eldis/'
+    out_dir='./tmp/cabi-crawl-data/eldis/'
 
     if len(args) > 0:
         data_url = args[0]
