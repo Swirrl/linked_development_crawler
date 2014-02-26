@@ -60,13 +60,11 @@ def restore_snapshot(graph_endpoint, snapshot_name):
     else:
         print "This is the initial run so there is nothing to restore."
 
-def start_transaction(end_point):
-    graph = end_point + "?graph=" + management_graph
-    execute("curl -f -X POST -H \"Content-Type: application/n-triples\" -d @503.nt " + graph)
+def start_transaction():
+    execute("touch /tmp/cabi-crawl-in-progress")
 
-def end_transaction(end_point):
-    graph = end_point + "?graph=" + management_graph
-    delete_graph(graph)
+def end_transaction():
+    execute("rm /tmp/cabi-crawl-in-progress")
 
 def delete_graph(graph_endpoint):
     if not is_initial_import():
@@ -100,7 +98,7 @@ def import_data(dataset_name, endpoint):
 
     fetch_snapshot(graph_endpoint, dataset_name)
 
-    start_transaction(endpoint)
+    start_transaction()
     delete_graph(graph_endpoint)
     try:
         import_rdf_files(base_path, graph_endpoint)
@@ -110,7 +108,7 @@ def import_data(dataset_name, endpoint):
         print traceback.print_exc()
         restore_snapshot(graph_endpoint, dataset_name)
 
-    end_transaction(end_point)
+    end_transaction()
 
 def initialise():
     if not os.path.exists("./tmp"):
