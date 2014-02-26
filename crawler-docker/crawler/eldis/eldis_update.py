@@ -59,9 +59,10 @@ def loop(script,url):
         next_url_fh = open(out_dir+'/nexturl','r')
         next_url = next_url_fh.read()
         next_url_fh.close()
+
         #safety
-        #if loop > 500:
-        if loop > 1: # TODO comment out and comment the above back in
+        #if loop > 1: # TODO comment out and comment the above back in
+        if loop > 500:
             break
 
 def main():
@@ -72,9 +73,9 @@ def main():
 
     # TODO reinstantiate
 
-    #loop('eldis_crawl_countries','http://api.ids.ac.uk/openapi/eldis/get_all/countries/full?num_results=1000')
-    #loop('eldis_crawl_orgs','http://api.ids.ac.uk/openapi/eldis/get_all/organisations/full?num_results=1000')
-    #loop('eldis_crawl_subjects','http://api.ids.ac.uk/openapi/eldis/get_all/themes/full?num_results=1000')
+    loop('eldis_crawl_countries','http://api.ids.ac.uk/openapi/eldis/get_all/countries/full?num_results=1000')
+    loop('eldis_crawl_orgs','http://api.ids.ac.uk/openapi/eldis/get_all/organisations/full?num_results=1000')
+    loop('eldis_crawl_subjects','http://api.ids.ac.uk/openapi/eldis/get_all/themes/full?num_results=1000')
 
 if __name__ == "__main__":
     main()

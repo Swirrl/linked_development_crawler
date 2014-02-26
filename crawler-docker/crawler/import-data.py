@@ -92,7 +92,7 @@ def get_remote_data(dataset_name):
     os.system(command) # delegate to update script
 
 def import_data(dataset_name, endpoint):
-    graph_uri = "http://linked-development.org/" + dataset_name + "/"
+    graph_uri = "http://linked-development.org/graph/" + dataset_name
     graph_endpoint = endpoint + "?graph=" + graph_uri
     base_path = "./tmp/cabi-crawl-data/" + dataset_name + "/rdf/"
 
