@@ -41,7 +41,6 @@ script_dir = "./eldis/" #Include trailing slash
 out_dir = "./tmp/cabi-crawl-data/eldis"
 
 graph_uri = "http://linked-development.org/eldis/"
-update_endpoint = "http://192.168.0.190/junk/data?graph=" + graph_uri
 
 def loop(script,url):
     #start import of eldis data
