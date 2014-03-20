@@ -38,39 +38,25 @@ If the script fails during its execution it will leave the `tmp/`
 directory for inspection and debugging.  Ideally this should be
 removed before the script is run again.
 
-Docker
-======
+Licence
+-------
 
-There is a docker setup included, however due to a
-[suspected bug in docker](https://github.com/dotcloud/docker/issues/4329)
-it is not currently fully working.
+Copyright (c) 2014 CABI & DFID.
 
-Instructions on running this with docker can be found below:
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
 
-Docker Initial Import
----------------------
+This program is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Affero General Public License for more details.
 
-You must create an initial import of the data into your fuseki
-instance to do this run the following commands:
+You should have received a copy of the GNU Affero General Public
+License along with this program.  If not, see
+<http://www.gnu.org/licenses/>.
 
-    $ docker build -t crawler .
-
-    $ docker run -t -i crawler /home/crawler/crawler/import-data.py eldis initial_import
-
-    $ docker run -t -i crawler /home/crawler/crawler/import-data.py r4d initial_import
-
-Docker Recurring Imports
-------------------------
-
-Subsequent data imports (for example on a crontab) can be run like
-this:
-
-     $ docker run -t -i crawler /home/crawler/crawler/import-data.py eldis
-
-     $ docker run -t -i crawler /home/crawler/crawler/import-data.py r4d
-
-
-Development
------------
-
-    $ docker build -t crawler . && docker run -t -i crawler /home/crawler/crawler/import-data.py eldis
+If you are not able to comply with the terms of the AGPL license, you
+can request an exemption or a commercial license by contacting Swirrl:
+http://swirrl.com.
