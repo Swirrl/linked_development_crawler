@@ -50,18 +50,18 @@ def main():
     execute('/bin/mkdir -p ./tmp/cabi-crawl-data/r4d/rdf/new')
     execute('/bin/echo http://linked-development.org/r4d/ > ./tmp/cabi-crawl-data/r4d/rdf/global.graph')
 
-    execute('cd ./tmp/cabi-crawl-data/r4d/rdf/new/ ; /usr/bin/wget http://www.dfid.gov.uk/r4d/rdf/R4DOutputsData.zip')
+    execute('cd ./tmp/cabi-crawl-data/r4d/rdf/new/ ; /usr/local/bin/wget http://r4d.dfid.gov.uk/rdf/R4DOutputsData.zip')
     #execute('/bin/mv R4DOutputsData.zip ./tmp/cabi-crawl-data/r4d/rdf/new/R4DOutputsData.zip')
     #unpack r4d data
     execute('/usr/bin/unzip ./tmp/cabi-crawl-data/r4d/rdf/new/R4DOutputsData.zip -d ./tmp/cabi-crawl-data/r4d/rdf/new')
     execute('/bin/rm -f ./tmp/cabi-crawl-data/r4d/rdf/new/R4DOutputsData.zip')
 
     #Get the FAO Ontology as well
-    execute('/usr/bin/wget  http://www.fao.org/countryprofiles/geoinfo/geopolitical/data')
+    execute('/usr/local/bin/wget  http://www.fao.org/countryprofiles/geoinfo/geopolitical/data')
     execute('/bin/mv data ./tmp/cabi-crawl-data/r4d/rdf/new/fao.rdf')
 
     # And get Agrovoc
-    execute('/usr/bin/wget ftp://ftp.fao.org/gi/gil/gilws/aims/kos/agrovoc_formats/current/agrovoc.skos.xml.en.zip')
+    execute('/usr/local/bin/wget ftp://ftp.fao.org/gi/gil/gilws/aims/kos/agrovoc_formats/current/agrovoc.skos.xml.en.zip')
     execute('/bin/mv agrovoc.skos.xml.en.zip ./tmp/cabi-crawl-data/r4d/rdf/new/agrovoc.skos.xml.en.zip')
     #unpack r4d data
     execute('/usr/bin/unzip ./tmp/cabi-crawl-data/r4d/rdf/new/agrovoc.skos.xml.en.zip -d ./tmp/cabi-crawl-data/r4d/rdf/new')
